@@ -8,8 +8,8 @@ Installation:
 
 3. Clone the codes to your local computer (**qsee** is a core package of our various repositories) (using terminal or cmd)
 ```
-git clone https://github.com/vutuanhai237/QuantumBattery.git
-cd QuantumBattery
+git clone https://github.com/vutuanhai237/QuantumCompressor.git
+cd QuantumCompressor
 rm -rf qsee (delete folder qsee)
 git clone https://github.com/vutuanhai237/qsee.git
 ```
