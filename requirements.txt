@@ -1,0 +1,3 @@
+qiskit==0.45.1
+tdqm
+matplotlib
