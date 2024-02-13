@@ -1,4 +1,6 @@
-# QuantumCompressor
+# Quantum Compressor
+
+This code is for the accepted paper entitled "Using hypergraph ansatz on the hybrid quantum-classical image compression scheme", which will be presented in [**ICISN2024**](https://icisn.com/), track "Image, Video and Signal Processing".
  
 Installation:
 
@@ -14,7 +16,7 @@ rm -rf qsee (delete folder qsee)
 git clone https://github.com/vutuanhai237/qsee.git
 ```
 
-Make sure that you see the **qsee** folder in the project
+Make sure that you see the **qsee** folder in QuantumCompressor folder.
 
 4. Install all the needed packages.
 ```
