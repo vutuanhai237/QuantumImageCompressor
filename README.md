@@ -8,15 +8,15 @@ Installation:
 
 2. Python 3.10+, download on python.org.
 
-3. Clone the codes to your local computer (**qsee** is a core package of our various repositories) (using terminal or cmd)
+3. Clone the codes to your local computer (**qoop** is a core package of our various repositories) (using terminal or cmd)
 ```
 git clone https://github.com/vutuanhai237/QuantumCompressor.git
 cd QuantumCompressor
-rm -rf qsee (delete folder qsee)
-git clone https://github.com/vutuanhai237/qsee.git
+rm -rf qoop (delete folder qoop)
+git clone https://github.com/vutuanhai237/qoop.git
 ```
 
-Make sure that you see the **qsee** folder in QuantumCompressor folder.
+Make sure that you see the **qoop** folder in QuantumCompressor folder.
 
 4. Install all the needed packages.
 ```
