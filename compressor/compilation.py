@@ -31,11 +31,8 @@ def divide_image(img, k):
 
 dev = qml.device("default.qubit")
 
-
-
-
-def circuit_curry(pl_qiskit_circuit, num_qubits, num_layers):
-    @qml.qnode(dev, diff_method="parameter-shift")
+def circuit_curry(num_qubits, num_layers):
+    @qml.qnode(dev)
     def circuit(thetas):
         k = 0
         for _ in range(num_layers):
@@ -47,24 +44,25 @@ def circuit_curry(pl_qiskit_circuit, num_qubits, num_layers):
                 qml.RY(thetas[k+1], wires = i)
                 qml.RZ(thetas[k+2], wires = i)
                 k += 3
-        pl_qiskit_circuit()
-        # qml.from_qiskit(qcx)
-        # return qml.expval(qml.PauliZ(0))
-        return qml.probs(wires=range(num_qubits))
+        return qml.state()
     return circuit
     
-def cost_curry(circuit):
+def cost_curry(state, circuit):
     def cost_func(thetas):
-        return 1 - circuit(thetas)[0]
+        psi = nps.expand_dims((state), axis = 1)
+        phi = nps.expand_dims(circuit(thetas), axis = 1)
+        p0 = (nps.real(nps.dot(nps.conjugate(psi).T, phi))**2)[0][0]
+        return 1 - p0
     return cost_func
 
 
 def compilation(state, thetas, num_layers, steps = 100, opt = qml.AdamOptimizer(stepsize = 0.1)):
     # Thetas must be nps array
-    qcx = state_to_qc(state)
+    
     num_qubits = int(np.log2(state.shape[0]))
-    circuit = circuit_curry(qcx, num_qubits, num_layers)
-    cost_func = cost_curry(circuit)
+    
+    circuit = circuit_curry(num_qubits, num_layers)
+    cost_func = cost_curry(state, circuit)
     grad_func = qml.grad(cost_func)
 
     costs = []
@@ -73,9 +71,10 @@ def compilation(state, thetas, num_layers, steps = 100, opt = qml.AdamOptimizer(
         thetas = nps.array(np.ones(3*num_layers*num_qubits))
     for i in range(steps):
         thetas, prev_cost = opt.step_and_cost(cost_func, thetas, grad_fn = grad_func)
+        costs.append(prev_cost)
+        thetass.append(thetas)
         if prev_cost < tau:
             print(f"Achieved error threshold at step {i}")
             break
-        costs.append(prev_cost)
-        thetass.append(thetas)
-    return costs, thetass
+    print(i)
+    return costs, thetass, i

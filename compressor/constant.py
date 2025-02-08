@@ -1,3 +1,3 @@
 
 # Acceptable loss threshold
-tau = 10**(-4)
+tau = 10**(-3)

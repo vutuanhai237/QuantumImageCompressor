@@ -14,11 +14,12 @@ class Image:
         for i in range(len(blocks)):
             for j in range(len(blocks[0])):
                 self.blocks[i][j] = Block(blocks[i][j], i, j)
+        self.num_blocks = self.blocks.shape[0] * self.blocks.shape[1]
         return
     def find_thetas_naive(self, num_layers):
         for i in range(len(self.blocks)):
             for j in range(len(self.blocks[0])):
-                self.find_thetas_at_ij(i, j, num_layers)
+                self.blocks[i][j].find_thetas(None, num_layers)
         return
     def find_thetas(self, num_layers):
         indices = create_random_indices(len(self.blocks), len(self.blocks[0]))
@@ -27,7 +28,7 @@ class Image:
         return
 
     def find_thetas_at_ij(
-        self, i, j, num_layers, is_optimize_evev_thetas_not_none=True
+        self, i, j, num_layers, is_optimize_even_thetas_not_none=True
     ):
         # Consider the block at (i,j) and its neighbors
         # If any neighbor has thetas, approximating thetas of the block at (i,j)
@@ -44,13 +45,15 @@ class Image:
                 if cost_func_at_y_by_thetas_y < current_cost_func_at_y_by_thetas_y:
                     current_cost_func_at_y_by_thetas_y = cost_func_at_y_by_thetas_y
                     init_thetas = thetas_y
-        if (
-            is_optimize_evev_thetas_not_none or init_thetas is None
-        ) and current_cost_func_at_y_by_thetas_y < tau:
+        if  init_thetas is not None:
             print(f"Block at ({i},{j}) is transfered")
             self.blocks[i][j].thetas = init_thetas
             self.blocks[i][j].cost = current_cost_func_at_y_by_thetas_y
             self.blocks[i][j].is_transfered = True
+            if current_cost_func_at_y_by_thetas_y > tau:
+                self.blocks[i][j].find_thetas(init_thetas, num_layers)
+            else:
+                print(f"Cost is less than tau, Block at ({i},{j}) is no need to finding thetas")
         else:
             print(f"Block at ({i},{j}) is finding thetas by itself")
             self.blocks[i][j].find_thetas(init_thetas, num_layers)
@@ -65,3 +68,22 @@ class Image:
                 if self.blocks[x][y].thetas is not None:
                     neighbors.append(self.blocks[x][y])
         return neighbors
+    def get_min_stepss(self):
+        min_stepss = []
+        for i in range(self.blocks.shape[0]):
+            for j in range(self.blocks.shape[1]):
+                min_stepss.append(self.blocks[i][j].min_steps)
+        return np.array(min_stepss)
+    def get_costs(self):
+        costs = []
+        for i in range(self.blocks.shape[0]):
+            for j in range(self.blocks.shape[1]):
+                costs.append(self.blocks[i][j].cost)
+        return np.array(costs)
+    def get_num_transfered(self):
+        num_transfered = 0
+        for i in range(self.blocks.shape[0]):
+            for j in range(self.blocks.shape[1]):
+                if self.blocks[i][j].is_transfered:
+                    num_transfered += 1
+        return num_transfered
