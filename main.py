@@ -6,7 +6,7 @@ from compressor.image import Image
 
 sizes = [8, 16, 32, 64, 128, 256]
 
-ks = [2,4]
+ks = [4]
 for k in ks:
     for image in ['lenna.png', 'cameraman.jpg']:
         for size in sizes:
