@@ -1,4 +1,4 @@
-# Quantum Compressor
+# Quantum Image Compressor algorithm
 
 This code is for the accepted paper entitled "", which will be presented in [**ICISN2024**](https://icisn.com/), track "Image, Video and Signal Processing".
 
